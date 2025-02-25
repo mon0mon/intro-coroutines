@@ -7,14 +7,14 @@ fun loadContributorsBlocking(service: GitHubService, req: RequestData) : List<Us
     val repos = service
         .getOrgReposCall(req.org)
         .execute() // Executes request and blocks the current thread
-        .also { logRepos(req, it) }
+        .also { logRepos(req = req, response = it) }
         .body() ?: emptyList()
 
     return repos.flatMap { repo ->
         service
-            .getRepoContributorsCall(req.org, repo.name)
+            .getRepoContributorsCall(owner = req.org, repo = repo.name)
             .execute() // Executes request and blocks the current thread
-            .also { logUsers(repo, it) }
+            .also { logUsers(repo = repo, response = it) }
             .bodyList()
     }.aggregate()
 }
